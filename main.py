@@ -20,6 +20,7 @@ clock = pygame.time.Clock()
 def redrawGameWindow():
     win.blit(bg, (0, 0))
     player.draw(win)
+    goblin.draw(win)
     for bullet in bullets:
         bullet.draw(win)
 
@@ -28,6 +29,7 @@ def redrawGameWindow():
 
 # main loop
 player = Player(200, 410, 64, 64)
+goblin = Enemy(100, 410, 64, 64, 450)
 bullets = []
 run = True
 while run:

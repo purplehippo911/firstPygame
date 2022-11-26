@@ -1,10 +1,11 @@
 import pygame
 
+
 class Player(object):
     walkRight = [pygame.image.load('images/R1.png'), pygame.image.load('images/R2.png'), pygame.image.load('images/R3.png'), pygame.image.load('images/R4.png'), pygame.image.load(
-    'images/R5.png'), pygame.image.load('images/R6.png'), pygame.image.load('images/R7.png'), pygame.image.load('images/R8.png'), pygame.image.load('images/R9.png')]
+        'images/R5.png'), pygame.image.load('images/R6.png'), pygame.image.load('images/R7.png'), pygame.image.load('images/R8.png'), pygame.image.load('images/R9.png')]
     walkLeft = [pygame.image.load('images/L1.png'), pygame.image.load('images/L2.png'), pygame.image.load('images/L3.png'), pygame.image.load('images/L4.png'), pygame.image.load(
-    'images/L5.png'), pygame.image.load('images/L6.png'), pygame.image.load('images/L7.png'), pygame.image.load('images/L8.png'), pygame.image.load('images/L9.png')]
+        'images/L5.png'), pygame.image.load('images/L6.png'), pygame.image.load('images/L7.png'), pygame.image.load('images/L8.png'), pygame.image.load('images/L9.png')]
     char = pygame.image.load('images/standing.png')
 
     def __init__(self, x, y, width, height):
@@ -33,6 +34,6 @@ class Player(object):
                 self.walkCount += 1
         else:
             if self.right:
-                win.blit(self.self.walkRight[0], (self.x, self.y))
+                win.blit(self.walkRight[0], (self.x, self.y))
             else:
                 win.blit(self.walkLeft[0], (self.x, self.y))
