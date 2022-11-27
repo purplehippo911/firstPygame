@@ -19,7 +19,7 @@ clock = pygame.time.Clock()
 
 def redrawGameWindow():
     win.blit(bg, (0, 0))
-    player.draw(win)
+    man.draw(win)
     goblin.draw(win)
     for bullet in bullets:
         bullet.draw(win)
@@ -27,69 +27,79 @@ def redrawGameWindow():
     pygame.display.update()
 
 
-# main loop
-player = Player(200, 410, 64, 64)
+# mainloop
+man = Player(200, 410, 64, 64)
 goblin = Enemy(100, 410, 64, 64, 450)
+shootLoop = 0
 bullets = []
 run = True
 while run:
     clock.tick(27)
+
+    if shootLoop > 0:
+        shootLoop += 1
+    if shootLoop > 3:
+        shootLoop = 0
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
     for bullet in bullets:
-        if bullet.x < screen_width and bullet.x > 0:
-            bullet.x += bullet.vel  # Moves the bullet by its vel
+        if bullet.y - bullet.radius < goblin.hitbox[1] + goblin.hitbox[3] and bullet.y + bullet.radius > goblin.hitbox[1]:
+            if bullet.x + bullet.radius > goblin.hitbox[0] and bullet.x - bullet.radius < goblin.hitbox[0] + goblin.hitbox[2]:
+                goblin.hit()
+                bullets.pop(bullets.index(bullet))
+
+        if bullet.x < 500 and bullet.x > 0:
+            bullet.x += bullet.vel
         else:
-            # This will remove the bullet if it is off the screen
             bullets.pop(bullets.index(bullet))
 
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_SPACE]:
-        if player.left:
+    if keys[pygame.K_SPACE] and shootLoop == 0:
+        if man.left:
             facing = -1
         else:
             facing = 1
 
-        if len(bullets) < 5:  # This will make sure we cannot exceed 5 bullets on the screen at once
-            bullets.append(Projectile(round(player.x + player.width//2),
-                           round(player.y + player.height // 2), 6, (0, 0, 0), facing))
-        # This will create a bullet starting at the middle of the character
+        if len(bullets) < 5:
+            bullets.append(Projectile(round(man.x + man.width // 2),
+                           round(man.y + man.height//2), 6, (0, 0, 0), facing))
 
-    if keys[pygame.K_LEFT] and player.x > player.vel:
-        player.x -= player.vel
-        player.left = True
-        player.right = False
-        player.standing = False
-    elif keys[pygame.K_RIGHT] and player.x < screen_width - player.width - player.vel:
-        player.x += player.vel
-        player.right = True
-        player.left = False
-        player.standing = False
+        shootLoop = 1
+
+    if keys[pygame.K_LEFT] and man.x > man.vel:
+        man.x -= man.vel
+        man.left = True
+        man.right = False
+        man.standing = False
+    elif keys[pygame.K_RIGHT] and man.x < 500 - man.width - man.vel:
+        man.x += man.vel
+        man.right = True
+        man.left = False
+        man.standing = False
     else:
-        player.standing = True
-        player.walkCount = 0
+        man.standing = True
+        man.walkCount = 0
 
-    if not (player.isJump):
-        # if keys[pygame.K_UP] and player.y > player.vel:
-        #     player.y -= player.vel
-        # if keys[pygame.K_DOWN] and player.y < screen_height - player.height - player.vel:
-        #     player.y += player.vel
+    if not (man.isJump):
         if keys[pygame.K_UP]:
-            player.isJump = True
+            man.isJump = True
+            man.right = False
+            man.left = False
+            man.walkCount = 0
     else:
-        if player.jumpCount >= -10:
+        if man.jumpCount >= -10:
             neg = 1
-            if player.jumpCount < 0:
+            if man.jumpCount < 0:
                 neg = -1
-            player.y -= (player.jumpCount ** 2) * 0.5 * neg
-            player.jumpCount -= 1
+            man.y -= (man.jumpCount ** 2) * 0.5 * neg
+            man.jumpCount -= 1
         else:
-            player.isJump = False
-            player.jumpCount = 10
+            man.isJump = False
+            man.jumpCount = 10
 
     redrawGameWindow()
 
